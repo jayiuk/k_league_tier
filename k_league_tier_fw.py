@@ -4,9 +4,7 @@ from sklearn.cluster import KMeans
 import pickle
 
 import os
-from dotenv import load_dotenv
-load_dotenv(verbose = True)
-path = os.getenv('url')
+path = 'C:/k_league_tier'
 data = pd.read_csv(os.path.join(path, 'total_ranking.csv'))
 
 km = KMeans(n_clusters = 10)
