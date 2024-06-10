@@ -7,10 +7,11 @@ import xgboost as xgb
 
     
 def new_data(goal, assist, apperance, prob, g_prob, foul_p, off_p, y_p, r_p, c_p):
-    with open('km.model', 'rb') as f:
+    with open('xgb_tier.model', 'rb') as f:
         model = pickle.load(f)
     nw = pd.DataFrame([{'득점' : goal, '도움' : assist, '출장' : apperance, '경기당 기록' : prob, '골 전환율' : g_prob, '파울P' : 80 - foul_p, '오프사이드P' : 80 - off_p, '경고P' : 80 - y_p, '퇴장P' : 80 - r_p, '교체P' : 80 - c_p}])
-    prediction = model.predict(nw)
+    nx = xgb.DMatrix(nw)
+    prediction = model.predict(nx)
     return prediction
     
     
