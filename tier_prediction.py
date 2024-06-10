@@ -18,9 +18,9 @@ x_train, x_test, y_train, y_test = train_test_split(x_data, y_data, test_size = 
 dtrain = xgb.DMatrix(data = x_train, label = y_train)
 dtest = xgb.DMatrix(data = x_test, label = y_test)
 
-params = {'max_depth' : 10, 'eta' : 0.4, 'objective' : 'multi:softmax', 'eval_metrics' : 'merror', 'num_class' : 5}
+params = {'max_depth' : 6, 'eta' : 0.5, 'objective' : 'multi:softmax', 'eval_metrics' : 'merror', 'num_class' : 5}
 
-num_rounds = 400
+num_rounds = 500
 
 xlist = [(dtrain, 'train'), (dtest, 'eval')]
 xgb_m = xgb.train(params = params, dtrain = dtrain, num_boost_round = num_rounds,  evals = xlist)

@@ -16,6 +16,3 @@ c_data['target'] = pred
 c_data
 c_data.to_csv('tier.csv', index = False)
 
-
-name = 'km.model'
-pickle.dump(km, open(name, 'wb'))
