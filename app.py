@@ -1,53 +1,40 @@
 import streamlit as st
 import pickle
 import os
-from dotenv import load_dotenv
+import pandas as pd
+import xgboost as xgb
 
 
-load_dotenv(verbose = True)
-path = os.getenv('url')
-model_path = os.path.join(path, 'tier_model.pkl')
     
-def new_data(model_path, goal, assist, point, shoot, apperance, change):
-    model = pickle.load(model_path)
-    nw = pd.DataFrame([{'골' : goal, '도움' : assist, '공격포인트' : point, '슈팅' : shoot, '출장' : apperance, '교체' : change}])
-    
-    prediction = model.predict(nw)
-    return prediction[0]
+def new_data(goal, assist, foul, yellow, red, apperance, change, prob):
+    with open('xgb_tier.model', 'rb') as f:
+        model = pickle.load(f)
+    nw = pd.DataFrame([{'득점' : goal, '도움' : assist, '파울' : foul, '경고' : yellow, '퇴장' : red, '출장' : apperance, '교체' : change, '경기당 기록' : prob}])
+    nx = xgb.DMatrix(data = nw)    
+    prediction = model.predict(nx)
+    prediction = int(prediction)
+    return prediction
     
     
 def main():
     st.title('공격수 티어 분류')
     st.write('K리그 데이터 기반')
-    goal = st.number_input('골', min_value = 0)
+    goal = st.number_input('득점', min_value = 0)
     assist = st.number_input('도움', min_value = 0)
-    point = st.number_input('공격포인트', min_value = 0)
-    shoot = st.number_input('슈팅', min_value = 0)
+    foul = st.number_input('파울', min_value = 0)
+    yellow = st.number_input('경고', min_value = 0)
+    red = st.number_input('퇴장', min_value = 0)
     apperance = st.number_input('출장', min_value = 0)
     change = st.number_input('교체', min_value = 0)
+    prob = st.number_input('경기당 기록', min_value = 0.0)
+    
+    result_list = ['S', 'D', 'C+', 'B', 'D+', 'C', 'A', 'A+', 'F', 'B+']
     
     if st.button('분류 시작'):
-        result = new_data(model_path, goal, assist, point, shoot, apperance, change)
-        if result == 0:
-            result = 'B+'
-        elif result == 1:
-            result = 'F'
-        elif result == 2:
-            result = 'C+'
-        elif result == 3:
-            result = 'S'
-        elif result == 4:
-            result = 'D+'
-        elif result == 5:
-            result = 'A+'
-        elif result == 6:
-            result = 'D'
-        elif result == 7:
-            result = 'C'
-        elif result == 8:
-            result = 'B'
-        elif result == 9:
-            result = 'A'
+        r = new_data(goal, assist, foul, yellow, red, apperance, change, prob)
+        for i in range(0, 10):
+            if r == i:
+                result = result_list[r]
         st.success(f'티어 : {result}')
 
 if __name__ == "__main__":
