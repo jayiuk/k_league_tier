@@ -3,6 +3,7 @@ import pandas as pd
 import pickle
 import os
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 
 
 from dotenv import load_dotenv
@@ -13,7 +14,13 @@ data = pd.read_csv(os.path.join(path, 'tier.csv'))
 y_data = data['target']
 x_data = data.drop(['target'], axis = 1)
 
-x_train, x_test, y_train, y_test = train_test_split(x_data, y_data, test_size = 0.2, random_state = 42)
+ss = StandardScaler()
+ss.fit(x_data)
+x_scaled = ss.transform(x_data)
+name = 'scaler.model'
+pickle.dump(ss, open(name, 'wb'))
+
+x_train, x_test, y_train, y_test = train_test_split(x_scaled, y_data, test_size = 0.2, random_state = 42)
 
 dtrain = xgb.DMatrix(data = x_train, label = y_train)
 dtest = xgb.DMatrix(data = x_test, label = y_test)
