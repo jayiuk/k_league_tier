@@ -18,16 +18,19 @@ def new_data(goal, assist, apperance, prob, g_prob, foul_p, off_p, y_p, r_p, c_p
 def main():
     st.title('공격수 티어 분류')
     st.write('K리그 데이터 기반')
-    goal = st.number_input('득점', min_value = 0)
+    goal = st.number_input('득점')
+    shoot = st.number_input('슈팅 수')
     assist = st.number_input('도움', min_value = 0)
-    apperance = st.number_input('출장', min_value = 0)
-    prob = st.number_input('경기당 기록', min_value = 0.0)
-    g_prob = st.number_input('골 전환율', min_value = 0.0)
+    apperance = st.number_input('출장')
     foul = st.number_input('파울', min_value = 0)
     off = st.number_input('오프사이드', min_value = 0)
     y = st.number_input('경고', min_value = 0)
     red = st.number_input('퇴장', min_value = 0)
     c = st.number_input('교체', min_value = 0)
+    g = goal / shoot
+    p = goal / apperance
+    g_prob = round(g, 1)
+    prob = round(p, 2)
     foul_p = 80 - foul
     off_p = 80 - off
     y_p = 80-y
@@ -41,7 +44,7 @@ def main():
         for i in range(0, 5):
             if r == i:
                 result = result_list[i]
-        st.success(f'티어 : {result}')
+        st.success(f'티어 : {result}, 슈팅 : {shoot}, 골 : {goal}, 출장 수 : {apperance}, 골 전환율 : {g_prob}')
 
 if __name__ == "__main__":
     main()
